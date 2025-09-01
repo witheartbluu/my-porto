@@ -1,13 +1,8 @@
-import React from "react";
-
-const footer = () => {
+export default function Footer() {
   return (
-    <div>
-      <h1 className="bottom-0 items-center py-8 align-middle justify-center bg-amber-50">
-        this is the footer
-      </h1>
-    </div>
+    <footer className="w-full px-6 py-10 border-t mt-16 text-sm text-center">
+      © {new Date().getFullYear()} My Portfolio
+      <h1 className="text-center">Made by Aprillia Kusuma</h1>
+    </footer>
   );
-};
-
-export default footer;
+}
