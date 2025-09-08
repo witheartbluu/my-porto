@@ -1,32 +1,51 @@
 "use client";
-import { motion, useMotionValue, useAnimationFrame } from "framer-motion";
+
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useAnimationFrame } from "framer-motion";
 
 const images = [
-  "/images/img-1.jpeg",
+  // "/images/img-1.jpeg",
   "/images/img-2.jpeg",
-  // "/images/img-3.jpeg",
+  "/images/img-3.jpeg",
   "/images/img-4.jpeg",
-  "/images/planify-bg.png",
-  "/images/planify-bg.png",
-  "/images/planify-bg.png",
-  "/images/planify-bg.png",
-  "/images/planify-bg.png",
+  "/images/img-5.jpeg",
+  "/images/img-6.jpeg",
+  "/images/img-7.jpeg",
 ];
 
 export default function About() {
+  // continuous marquee state
   const x = useMotionValue(0);
-  const [paused, setPaused] = useState(false);
+  const speed = 1; // px per frame (increase for faster)
 
-  const speed = 1; // pixels per frame
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const halfWidthRef = useRef(0);
 
-  // Animate frame by frame instead of restart
+  // measure half track width (because we duplicate the list)
+  function measure() {
+    const el = trackRef.current;
+    if (!el) return;
+    halfWidthRef.current = el.scrollWidth / 2;
+  }
+
+  useEffect(() => {
+    // measure after mount & a tick (images layout)
+    const id = requestAnimationFrame(measure);
+    // re-measure on resize
+    const onResize = () => measure();
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  // move left forever and wrap when passing -halfWidth
   useAnimationFrame(() => {
-    if (!paused) {
-      const current = x.get();
-      x.set(current - speed); // move left
-    }
+    const next = x.get() - speed;
+    const wrapAt = -(halfWidthRef.current || 0);
+    x.set(next <= wrapAt ? 0 : next);
   });
 
   return (
@@ -34,7 +53,7 @@ export default function About() {
       <div className="flex items-center justify-center">
         <span className="text-gray-400">
           <Image
-            src="/images/me.png"
+            src="/images/pp.png"
             alt="Profile Picture"
             width={720}
             height={640}
@@ -58,14 +77,9 @@ export default function About() {
         </div>
       </div>
 
-      {/* Escalator / Carousel */}
+      {/* Infinite Escalator / Carousel */}
       <div className="overflow-hidden w-full border-t py-10">
-        <motion.div
-          className="flex gap-6"
-          style={{ x }}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
+        <motion.div ref={trackRef} className="flex gap-6" style={{ x }}>
           {[...images, ...images].map((src, i) => (
             <div
               key={i}
@@ -82,6 +96,7 @@ export default function About() {
           ))}
         </motion.div>
       </div>
+
       <div className="flex items-center justify-center text-center mt-4">
         <h1 className="text-3xl font-semibold py-2">
           I’m an undergraduate majoring in Information Systems at Universitas
@@ -119,9 +134,9 @@ export default function About() {
           What am I Currently Working On
         </h1>
       </div>
-      <div className=" grid grid-cols-1 md:grid-cols-2 gap-10 px-12 py-8">
-        {/* Cards */}
-        {/* Taksu Tech */}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 px-12 py-8">
+        {/* Cards - Taksu Tech */}
         <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex flex-col items-center text-center px-8 py-10">
             <Image
@@ -132,15 +147,12 @@ export default function About() {
               className="h-12 w-auto object-contain"
               priority
             />
-
             <h2 className="mt-6 text-2xl font-semibold tracking-tight">
               Intern at Taksu Tech
             </h2>
-
             <p className="mt-1 text-sm text-gray-500">
               August 2025 – <span className="italic">present</span>
             </p>
-
             <p className="mt-4 max-w-md text-sm leading-relaxed text-gray-600">
               Currently building my portfolio site as an onboarding
               project—aligning with the studio’s stack and code standards—before
@@ -168,8 +180,8 @@ export default function About() {
             </a>
           </div>
         </div>
-        {/* Cards */}
-        {/* SatuEdu */}
+
+        {/* Cards - SatuEdu */}
         <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex flex-col items-center text-center px-8 py-10">
             <Image
@@ -180,15 +192,12 @@ export default function About() {
               className="h-12 w-auto object-contain"
               priority
             />
-
             <h2 className="mt-6 text-2xl font-semibold tracking-tight">
               UI/UX Designer at SatuEdu Foundation
             </h2>
-
             <p className="mt-1 text-sm text-gray-500">
               February 2025 – <span className="italic">present</span>
             </p>
-
             <p className="mt-4 max-w-md text-sm leading-relaxed text-gray-600">
               Designed the main website dashboard and SatuEdu’s MLS
               (e-learning). Focus on accessible navigation, clear progress cues,

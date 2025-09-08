@@ -26,7 +26,7 @@ export default function Contact() {
         </div>
         {/* Right column */}
         <div className="space-y-2">
-          <h2 className="text-3xl font-semibold">+628 969 7191 353</h2>
+          <h2 className="text-3xl font-semibold">+62 8969 7191 353</h2>
           <a
             href="https://github.com/witheartbluu"
             className="text-md font-medium underline underline-offset-4 text-black hover:text-[#3A328A]"

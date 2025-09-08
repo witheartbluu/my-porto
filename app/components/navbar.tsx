@@ -8,7 +8,7 @@ const NavLinks = [
   { id: 2, title: "About", link: "/about" },
   { id: 3, title: "Works", link: "/works" },
   { id: 4, title: "Contact", link: "/contact" },
-  { id: 5, title: "Blog", link: "/blog" },
+  { id: 5, title: "Blog", link: "/blogs" },
 ];
 
 export default function Navbar() {

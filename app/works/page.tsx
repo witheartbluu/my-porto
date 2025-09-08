@@ -25,11 +25,7 @@ function Card({
       href={href}
       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-3xl"
     >
-      <motion.article
-        whileHover={{ y: -4, scale: 1.01 }}
-        transition={{ type: "spring", stiffness: 250, damping: 20 }}
-        className="group h-full overflow-hidden rounded-3xl border border-gray-200 bg-white transition duration-200 hover:shadow-lg"
-      >
+      <div className="group h-full overflow-hidden rounded-3xl border border-gray-200 bg-white transition duration-250 hover:shadow-md hover:scale-102">
         <div className="relative aspect-[16/9]">
           <Image
             src={cover}
@@ -48,7 +44,7 @@ function Card({
             {description}
           </p>
         </div>
-      </motion.article>
+      </div>
     </Link>
   );
 }
@@ -72,7 +68,7 @@ export default function Works() {
     <div className="min-h-screen">
       {/* Title */}
       <section className="px-6 md:px-10 mt-6">
-        <h2 className="text-5xl font-bold text-center mb-12 mt-4">
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 mt-4">
           Projects Showcase
         </h2>
       </section>
@@ -198,16 +194,30 @@ export default function Works() {
       </section>
 
       {/* Grid */}
-      <main className="px-6 md:px-10 mt-12 mb-16">
+      <main className="px-6 py-4 md:px-10 mt-12 mb-16">
         <div className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch text-justify">
           {filtered.map((p) => (
-            <Card
+            <Link
               key={p.details}
-              title={p.title}
-              cover={p.cover}
-              description={p.description}
               href={`/works/${p.details}`}
-            />
+              className="rounded-2xl shadow-md overflow-hidden flex flex-col border border-black/25 hover:scale-102 duration-300 cursor-pointer"
+            >
+              {/* Cover image */}
+              <img
+                src={p.cover}
+                alt={p.title}
+                className="w-full h-48 object-cover object-center"
+              />
+
+              {/* Card body */}
+              <div className="p-4 flex flex-col flex-1">
+                <h3 className="text-lg font-semibold mb-2">{p.title}</h3>
+
+                <p className="text-gray-600 line-clamp-3 mb-4 md:text-justify sm:text-justify text-justify">
+                  {p.description}
+                </p>
+              </div>
+            </Link>
           ))}
         </div>
       </main>

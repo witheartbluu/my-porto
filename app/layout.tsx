@@ -24,20 +24,35 @@ export const metadata: Metadata = {
   },
 };
 
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <html
+//       lang="en"
+//       className={`${instrumentSans.variable} ${geistMono.variable}`}
+//     >
+//       <body className="antialiased font-sans">
+//         <NavBar />
+//         <main>{children}</main>
+//         <Footer />
+//       </body>
+//     </html>
+//   );
+// }
+import UserLayout from "./components/userlayout";
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${instrumentSans.variable} ${geistMono.variable}`}
-    >
-      <body className="antialiased font-sans">
-        <NavBar />
-        <main>{children}</main>
-        <Footer />
+    <html lang="en">
+      <body>
+        <UserLayout>{children}</UserLayout>
       </body>
     </html>
   );
