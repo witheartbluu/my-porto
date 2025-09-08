@@ -8,7 +8,6 @@ import { works as ALL_WORKS, type Work, type Category } from "@/app/lib/work";
 
 type FilterCat = "all" | Category;
 
-// Card ------------------------------------------------------
 function Card({
   title,
   cover,
@@ -69,7 +68,7 @@ export default function Works() {
       {/* Title */}
       <section className="px-6 md:px-10 mt-6">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 mt-4">
-          Projects Showcase
+          Previous Works Showcase
         </h2>
       </section>
 
@@ -200,7 +199,7 @@ export default function Works() {
             <Link
               key={p.details}
               href={`/works/${p.details}`}
-              className="rounded-2xl shadow-md overflow-hidden flex flex-col border border-black/25 hover:scale-102 duration-300 cursor-pointer"
+              className="rounded-2xl overflow-hidden flex flex-col border border-black/25 hover:scale-102 duration-300 cursor-pointer"
             >
               {/* Cover image */}
               <img

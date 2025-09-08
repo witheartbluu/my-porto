@@ -27,14 +27,14 @@ export default function Hero() {
       title: "Planify (Find Event Organizer)",
       role: "UI DESIGNER",
       subtitle: "Mobile Application",
-      img: "/images/planify-bg.png",
+      img: "/images/planify-1.png",
       desc: "Planify is a mobile application that helps everyone to find a trusted and perfect event organizer for their precious event. Planify links clients to professional event organizers. Users compare portfolios, packages, and reviews, request quotes, and confirm details in one place—reducing back-and-forth and speeding up bookings.",
     },
     {
       title: "SatuEdu (SkillUp)",
       role: "UI DESIGNER",
       subtitle: "Website",
-      img: "/images/skillup-bg.png",
+      img: "/images/satuedu-1.png",
       desc: "SatuEdu Foundation is a non-profit organization committed to empowering individuals in Indonesia's most underdeveloped regions. The initiative connects learners to quality, inclusive learning resources and support, helping more people start, persist, and finish skill pathways. ",
     },
     // {
@@ -48,14 +48,14 @@ export default function Hero() {
       title: "Sushi Man (Digital Order Record)",
       role: "UI DESIGNER & FRONT-END",
       subtitle: "Mobile Application",
-      img: "/images/sushiman-bg.png",
+      img: "/images/sushiman-1.png",
       desc: "Sushi Man is a mobile application that serves as a system to record customer orders. SushiMan centralizes customer orders in one mobile app so restaurants can log, track, and fulfill orders without manual slips. It reduces handoff errors, shortens time spent reconciling tickets, and gives staff a clear queue from intake to checkout. ",
     },
     {
       title: "ISSA (Students Achievement)",
       role: "UI DESIGNER",
       subtitle: "Website",
-      img: "/images/issa-bg.png",
+      img: "/images/issa-1.png",
       desc: "ISSA or Information System Students Achievement is a web platform for submitting, verifying, and reporting student achievements within the Information Systems program. It replaces scattered spreadsheets with a searchable, reliable record and surfaces top achievers for awards and recognition. Faculty get cleaner data; students get visible credit for their work.",
     },
     // {
@@ -229,39 +229,46 @@ export default function Hero() {
             Projects Showcase
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid gap-6 md:grid-cols-2">
             {projects.map((p, i) => (
               <motion.button
                 key={i}
                 type="button"
                 onClick={() => setActive(i)}
-                whileHover={{ scale: 1.03 }}
+                whileHover={{ scale: 1.01, translateY: -2 }}
                 whileTap={{ scale: 0.995 }}
                 transition={{ type: "spring", stiffness: 260, damping: 22 }}
-                className="group relative rounded-lg overflow-hidden shadow text-left
-                         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
-                         transform-gpu will-change-transform"
+                className="group text-left rounded-2xl overflow-hidden border border-black/10 bg-white shadow-sm
+                 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-indigo-500
+                 transform-gpu will-change-transform"
+                aria-label={`Open project: ${p.title}`}
               >
-                <Image
-                  src={p.img}
-                  alt={p.title}
-                  width={600}
-                  height={410}
-                  className="w-full h-auto object-cover rounded-lg items-center"
-                  sizes="(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
-                />
+                {/* Image top */}
+                <div className="relative w-full aspect-[16/9]">
+                  <Image
+                    src={p.img}
+                    alt={p.title}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
+                    priority={i < 2}
+                  />
+                  {/* Optional role badge */}
+                  {p.role && (
+                    <span className="absolute top-3 left-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-indigo-700 shadow ring-1 ring-black/5">
+                      {p.role}
+                    </span>
+                  )}
+                </div>
 
-                <span className="absolute top-4 left-4 z-20 text-3xl font-semibold text-white drop-shadow">
-                  {p.role}
-                </span>
-
-                {/* Dim overlay */}
-                <div className="absolute inset-0 z-10 bg-black/20 group-hover:bg-black/30 transition-colors" />
-
-                {/* Bottom text block */}
-                <div className="absolute inset-x-0 bottom-0 z-20 p-4 text-white">
-                  <h3 className="text-4xl font-semibold">{p.title}</h3>
-                  <p className="text-md">{p.subtitle}</p>
+                {/* Text block below image */}
+                <div className="p-5">
+                  <h3 className="text-2xl font-semibold text-gray-900">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2 text-base leading-6 text-gray-600 line-clamp-3">
+                    {p.subtitle}
+                  </p>
                 </div>
               </motion.button>
             ))}
@@ -289,23 +296,55 @@ export default function Hero() {
         <h2 className="text-5xl font-bold mb-6">Impact Through Services</h2>
         <div className="space-y-2">
           {experiences.map((exp, i) => (
-            <div
-              key={i}
-              className="border rounded-lg p-4 cursor-pointer"
-              onClick={() => setOpen(open === i ? null : i)}
-            >
-              <p className="font-medium">{exp.title}</p>
+            <div key={i} className="border rounded-lg overflow-hidden">
+              {/* Header row (click target) */}
+              <button
+                type="button"
+                onClick={() => setOpen(open === i ? null : i)}
+                aria-expanded={open === i}
+                className="w-full flex items-center justify-between gap-4 p-4 cursor-pointer text-left
+                     hover:bg-gray-50"
+              >
+                <p className="font-medium">{exp.title}</p>
 
+                {/* Chevron */}
+                <motion.span
+                  initial={false}
+                  animate={{ rotate: open === i ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="shrink-0"
+                  aria-hidden="true"
+                >
+                  {/* inline chevron-down (no extra deps) */}
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="text-gray-600"
+                  >
+                    <path
+                      d="M6 9l6 6 6-6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </motion.span>
+              </button>
+
+              {/* Collapsible content */}
               <AnimatePresence initial={false}>
                 {open === i && exp.desc && (
                   <motion.div
-                    className="mt-4 space-y-4 text-justify "
+                    className="px-4 pb-4 space-y-4 text-justify"
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
                   >
-                    {exp.imgs && exp.imgs.length > 0 && (
+                    {exp.imgs?.length ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {exp.imgs.map((src, j) => (
                           <Image
@@ -318,11 +357,13 @@ export default function Hero() {
                           />
                         ))}
                       </div>
-                    )}
+                    ) : null}
 
                     <p className="text-sm text-gray-600">{exp.desc}</p>
                     {exp.duration && (
-                      <p className="text-xs text-gray-500">{exp.duration}</p>
+                      <p className="text-xs text-gray-600 font-medium">
+                        {exp.duration}
+                      </p>
                     )}
                   </motion.div>
                 )}
@@ -332,9 +373,9 @@ export default function Hero() {
         </div>
       </section>
 
-      {/* Contact (kept as-is, animations optional) */}
+      {/* Contact */}
       <section
-        id="experiences"
+        id="Contact"
         className="p-4 border-t items-center justify-center"
       >
         <h1 className="text-5xl font-bold mb-6 text-center mt-16">

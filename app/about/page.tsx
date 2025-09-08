@@ -98,7 +98,7 @@ export default function About() {
       </div>
 
       <div className="flex items-center justify-center text-center mt-4">
-        <h1 className="text-3xl font-semibold py-2">
+        <h1 className="text-3xl font-semibold py-6 mx-8">
           I’m an undergraduate majoring in Information Systems at Universitas
           Pendidikan Ganesha. I design interactive, accessible user interfaces
           and have contributed to several UI/UX projects from research and flows

@@ -38,7 +38,7 @@ export default function Contact() {
         </div>
         <a
           href="/CV-Aprillia-Kusuma.pdf"
-          download={"CV"}
+          download={"CV_Aprillia Kusuma"}
           className="w-full border rounded-3xl py-2 px-6 text-center font-medium hover:border-[#3A328A] text-black hover:text-[#3A328A] hover:scale-102 duration-100"
         >
           Download My Resume
