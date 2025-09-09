@@ -17,18 +17,47 @@ interface Blog {
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null); // <-- add this
+
+  // useEffect(() => {
+  //   fetch("http://127.0.0.1:8080/api/blogs")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setBlogs(data);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error fetching blogs:", err);
+  //       setLoading(false);
+  //     });
+  // }, []);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8080/api/blogs")
-      .then((res) => res.json())
-      .then((data) => {
-        setBlogs(data);
-        setLoading(false);
+    const base = (process.env.NEXT_PUBLIC_API_BASE || "").replace(/\/+$/, "");
+    const url = `${base}/api/blogs`;
+    console.log("NEXT_PUBLIC_API_BASE =", base);
+    console.log("Fetching URL          =", url);
+
+    fetch(url, { headers: { Accept: "application/json" }, mode: "cors" })
+      .then(async (res) => {
+        console.log("Status                =", res.status);
+        console.log("Content-Type          =", res.headers.get("content-type"));
+        const raw = await res.text();
+        console.log("Raw body              =", raw);
+
+        try {
+          const json = JSON.parse(raw);
+          setBlogs(Array.isArray(json) ? json : json?.data ?? []);
+        } catch {
+          setBlogs([]);
+          setErr("Response was not JSON");
+        }
       })
-      .catch((err) => {
-        console.error("Error fetching blogs:", err);
-        setLoading(false);
-      });
+      .catch((e) => {
+        console.error("Fetch ERROR:", e);
+        setErr(String(e?.message || e));
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <p className="text-center">Loading blogs...</p>;
