@@ -5,12 +5,13 @@ import { setToken } from "@/app/lib/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://aprillia-porto.up.railway.app"; // fallback
+
 export default function AdminLogin() {
   const router = useRouter();
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const base = "https://aprillia-porto.up.railway.app"; // TEMP
-  const url = `${base}/api/login`;
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -22,23 +23,33 @@ export default function AdminLogin() {
     const password = String(form.get("password") || "");
 
     try {
-      const res = await fetch(`${url}`, {
+      const res = await fetch(`${API_BASE}/api/login`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        // If you switch to cookie-based auth later, add: credentials: "include"
         body: JSON.stringify({ email, password }),
-        mode: "cors",
       });
 
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`Login failed (${res.status}) ${txt}`);
+      // Try JSON first; if it fails, use raw text
+      const raw = await res.text();
+      let data: any = {};
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        /* ignore */
       }
 
-      const data = await res.json();
+      if (!res.ok) {
+        const msg =
+          data?.error ||
+          data?.message ||
+          raw?.slice(0, 200) ||
+          `Login failed (${res.status})`;
+        throw new Error(msg);
+      }
+
       const token: string | undefined =
         data.access_token ?? data.token ?? data?.data?.token;
 
