@@ -18,6 +18,8 @@ export default function BlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null); // <-- add this
+  const base = "https://aprillia-porto.up.railway.app"; // TEMP
+  const url = `${base}/api/blogs`;
 
   // useEffect(() => {
   //   fetch("http://127.0.0.1:8080/api/blogs")
