@@ -3,13 +3,28 @@
 
 import { setToken } from "@/app/lib/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE || "https://aprillia-porto.up.railway.app"; // fallback
+// Resolve API base for dev/prod
+function getApiBase(): string {
+  // Prefer explicit env (set in .env.local / Vercel)
+  const fromEnv =
+    process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL; // support either name
+  if (fromEnv) return fromEnv;
+
+  // Fallbacks
+  if (
+    typeof window !== "undefined" &&
+    window.location.hostname === "localhost"
+  ) {
+    return "http://127.0.0.1:8080";
+  }
+  return "https://aprillia-porto.up.railway.app";
+}
 
 export default function AdminLogin() {
   const router = useRouter();
+  const API_BASE = useMemo(getApiBase, []);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,19 +41,19 @@ export default function AdminLogin() {
       const res = await fetch(`${API_BASE}/api/login`, {
         method: "POST",
         headers: {
-          Accept: "application/json",
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
-      // Try JSON first; if it fails, use raw text
+      // Read as text first to gracefully handle non-JSON error bodies
       const raw = await res.text();
       let data: any = {};
       try {
         data = raw ? JSON.parse(raw) : {};
       } catch {
-        /* ignore */
+        /* ignore parse error; we'll use raw if needed */
       }
 
       if (!res.ok) {
@@ -67,39 +82,58 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen w-full mt-32">
       <form onSubmit={handleLogin} className="space-y-4 max-w-sm mx-auto p-6">
-        <div className="px-6 py-8 border rounded-2xl items-center">
-          <h1 className="text-3xl font-bold text-center mt-4 mb-8">
+        <div className="px-6 py-8 border rounded-2xl">
+          <h1 className="text-3xl font-bold text-center mt-2 mb-6">
             Welcome, Admin!
           </h1>
 
           {err && (
-            <p className="mb-3 text-sm text-red-600 break-words">{err}</p>
+            <p className="mb-3 text-sm text-red-600 break-words" role="alert">
+              {err}
+            </p>
           )}
 
-          <h2 className="text-sm font-medium opacity-75">Email</h2>
+          <label className="text-sm font-medium opacity-75" htmlFor="email">
+            Email
+          </label>
           <input
+            id="email"
             name="email"
             type="email"
             required
-            className="input w-full border px-2 py-2 rounded-lg border-black/10"
-            placeholder="Email"
+            autoComplete="username"
+            className="mt-1 w-full border px-3 py-2 rounded-lg border-black/10"
+            placeholder="admin@email.com"
           />
 
-          <h2 className="text-sm font-medium mt-3 opacity-75">Password</h2>
+          <label
+            className="text-sm font-medium mt-3 opacity-75 block"
+            htmlFor="password"
+          >
+            Password
+          </label>
           <input
+            id="password"
             name="password"
             type="password"
             required
-            className="input w-full border px-2 py-2 rounded-lg border-black/10"
-            placeholder="Password"
+            autoComplete="current-password"
+            className="mt-1 w-full border px-3 py-2 rounded-lg border-black/10"
+            placeholder="••••••••"
           />
 
           <button
+            type="submit"
             disabled={loading}
-            className="btn w-full border mt-6 px-2 py-2 rounded-lg border-black/10 hover:bg-[#3A3282] hover:text-white disabled:opacity-60"
+            className="w-full border mt-6 px-3 py-2 rounded-lg border-black/10 hover:bg-[#3A3282] hover:text-white disabled:opacity-60"
           >
             {loading ? "Logging in…" : "Login"}
           </button>
+
+          {/* Helpful runtime hint (remove if you don't want it) */}
+          <p className="mt-3 text-xs text-gray-500 break-all">
+            API: {API_BASE}
+          </p>
         </div>
       </form>
 
